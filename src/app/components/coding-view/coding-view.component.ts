@@ -4,10 +4,11 @@ import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { EditorComponent } from 'ngx-monaco-editor-v2';
 import { MOCK_CODING_QUESTION } from '../../mocks/codingQuestion.mock';
 import { CodingQuestion } from '../../models/codingQuestion.model';
+import { CodeRunComponent } from '../code-run/code-run.component';
 @Component({
   selector: 'app-coding-view',
   standalone: true,
-  imports: [EditorComponent, FormsModule, NgbNavModule],
+  imports: [EditorComponent, FormsModule, NgbNavModule, CodeRunComponent],
   templateUrl: './coding-view.component.html',
   styleUrl: './coding-view.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
