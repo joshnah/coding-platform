@@ -1,8 +1,8 @@
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
-require('dotenv').config();
-
+import express from 'express';
+import axios from 'axios';
+import cors from 'cors';
+import dotenv from 'dotenv';
+dotenv.config();
 const app = express();
 const port = 5000;
 
@@ -12,9 +12,7 @@ app.use(cors());
 const JUDGE0_API_URL =
   'https://judge0-ce.p.rapidapi.com/submissions/?base64_encoded=false&wait=true';
 const JUDGE0_API_KEY = process.env['JUDGE0_API_KEY']; // Optional, if needed
-
-app.post('/submit', async (req, res) => {
-  console.log(req);
+app.post('/execute', async (req, res) => {
   try {
     const { source_code, language_id, stdin } = req.body;
 
