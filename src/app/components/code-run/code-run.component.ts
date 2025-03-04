@@ -10,28 +10,27 @@ import { SpinnerService } from '../../services/spinner.service';
 import { ExecutionService } from '../../services/execution.service';
 import { CodeExecutionResult } from '../../models/codingQuestion.model';
 import { finalize } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-code-run',
-  standalone: true,
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './code-run.component.html',
   styleUrl: './code-run.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodeRunComponent {
-  code = input<string>('');
-  exampleInput = input<string>();
+  code = input('');
   executionService = inject(ExecutionService);
   output = signal<CodeExecutionResult | null>(null);
-  stdin = linkedSignal(() => this.exampleInput());
-
+  stdin = signal('');
+  language = input('');
   private spinner = inject(SpinnerService);
 
   executeCode() {
     this.spinner.openGlobalSpinner();
     this.executionService
-      .executeCode(this.code(), 'java', this.stdin()!)
+      .executeCode(this.code(), this.language(), this.stdin()!)
       .pipe(
         finalize(() => {
           this.spinner.closeGlobalSpinner();

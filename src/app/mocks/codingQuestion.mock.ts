@@ -19,15 +19,8 @@ export const MOCK_CODING_QUESTION: CodingQuestion = {
   ],
   functionSignatures: [
     {
-      language: 'java',
-      arguments: [
-        {
-          name: 'n',
-          type: 'Integer',
-        },
-      ],
-      returnType: 'int',
+      language: 'python',
+      signature: 'def sum_of_digits(n: int) -> int:',
     },
   ],
-  functionName: 'sumOfDigits',
 };

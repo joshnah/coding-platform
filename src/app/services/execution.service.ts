@@ -12,7 +12,7 @@ import {
 export class ExecutionService {
   constructor() {}
   private http = inject(HttpClient);
-  private url = 'localhost:5000';
+  private url = 'http://localhost:5000';
   executeCode(
     code: string,
     language: string,

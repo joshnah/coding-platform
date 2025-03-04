@@ -4,13 +4,11 @@ export interface CodingQuestion {
   description: string;
   testCases: TestCase[];
   functionSignatures: FunctionSignature[];
-  functionName: string;
 }
 
 export interface FunctionSignature {
   language: string;
-  arguments: FunctionArgument[];
-  returnType: string;
+  signature: string;
 }
 
 export interface FunctionArgument {

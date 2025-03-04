@@ -75,7 +75,8 @@
               "buildTarget": "coding-platform:build:production"
             },
             "development": {
-              "buildTarget": "coding-platform:build:development"
+              "buildTarget": "coding-platform:build:development",
+              "proxyConfig": "src/proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

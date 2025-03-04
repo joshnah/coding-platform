@@ -4,7 +4,7 @@
   <div class="row flex-grow-1 h-100">
     <!-- Left Panel: Question Description -->
     <div
-      class="col-md-6 bg-light overflow-auto d-flex flex-column h-100 border pt-2"
+      class="col-6 bg-light overflow-auto d-flex flex-column h-100 border pt-2"
     >
       <ul
         [destroyOnHide]="false"
@@ -42,7 +42,7 @@
 
     <!-- Right Panel: Code Editor -->
 
-    <div class="col-md-6 d-flex flex-column h-100 bg-light border p-0">
+    <div class="col-6 d-flex flex-column h-100 bg-light border p-0">
       <!-- Submit Button -->
       <div
         class="bg-dark text-white p-3 d-flex align-items-center justify-content-between"
@@ -63,7 +63,7 @@
 
       <!-- Code Execution Section -->
       <div class="bg-white border-top overflow-auto h-25">
-        <app-code-run></app-code-run>
+        <app-code-run [code]="code()" [language]="langugage()"></app-code-run>
       </div>
     </div>
   </div>
