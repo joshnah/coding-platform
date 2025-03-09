@@ -3,17 +3,18 @@ import {
   Component,
   inject,
   linkedSignal,
-  OnInit,
   resource,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { EditorComponent } from 'ngx-monaco-editor-v2';
-import { CodingQuestion } from '../../models/codingQuestion.model';
-import { CodeRunComponent } from '../code-run/code-run.component';
+import { finalize } from 'rxjs';
+import { CodeExecutionResult } from '../../models/codingQuestion.model';
 import { CodeGeneratorService } from '../../services/code-generator.service';
 import { ExecutionService } from '../../services/execution.service';
+import { SpinnerService } from '../../services/spinner.service';
+import { CodeRunComponent } from '../code-run/code-run.component';
 @Component({
   selector: 'app-coding-view',
   imports: [EditorComponent, FormsModule, NgbNavModule, CodeRunComponent],
@@ -21,10 +22,18 @@ import { ExecutionService } from '../../services/execution.service';
   styleUrl: './coding-view.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CodingViewComponent implements OnInit {
+export class CodingViewComponent {
   codeGeneratorService = inject(CodeGeneratorService);
   executionService = inject(ExecutionService);
+  private spinner = inject(SpinnerService);
+
   language = signal('python');
+  codeRunInput = linkedSignal(
+    () => this.codingQuestion.value().testCases[0].input,
+  );
+  codeRunOutput = signal<CodeExecutionResult | null>(null);
+  active = 'description';
+
   editorOptions = {
     language: this.language(),
     scrollBeyondLastLine: false,
@@ -35,15 +44,13 @@ export class CodingViewComponent implements OnInit {
     automaticLayout: true, // Ajuste automatiquement la taille de l'éditeur
   };
 
-  ngOnInit(): void {}
-
-  active = 'description';
   codingQuestion = resource({
     loader: async () => {
       const response = await fetch('http://localhost:5000/questions/mock');
       return response.json();
     },
   });
+
   code = linkedSignal(() =>
     this.codingQuestion.hasValue()
       ? this.codeGeneratorService.generateSubmissionCode(
@@ -56,5 +63,23 @@ export class CodingViewComponent implements OnInit {
     this.executionService
       .submit(this.code(), this.language())
       .subscribe((a) => console.log(a));
+  }
+  hasErrorCompilation(): boolean {
+    return this.codeRunOutput()?.status?.id === 6;
+  }
+  runCode() {
+    this.spinner.openGlobalSpinner();
+    this.executionService
+      .executeCode(this.code(), this.language(), this.codeRunInput())
+      .pipe(
+        finalize(() => {
+          this.spinner.closeGlobalSpinner();
+        }),
+      )
+
+      .subscribe((codeExecutionResult: CodeExecutionResult) => {
+        console.log('code execution', codeExecutionResult);
+        this.codeRunOutput.set(codeExecutionResult);
+      });
   }
 }

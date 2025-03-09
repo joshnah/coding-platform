@@ -17,10 +17,16 @@
           <li ngbNavItem="description">
             <button ngbNavLink>Description</button>
             <ng-template ngbNavContent>
-              <h2 class="mb-3">{{ question.title }}</h2>
-              <div class="card">
-                <div class="card-body">
-                  <p class="mb-0">{{ question.description }}</p>
+              <div class="d-flex flex-column">
+                <h2 class="mb-3">{{ question.title }}</h2>
+                <div class="card">
+                  <div class="card-body over">
+                    <pre
+                      class="mb-0 text-break"
+                      style="white-space: pre-wrap"
+                      >{{ question.description }}</pre
+                    >
+                  </div>
                 </div>
               </div>
             </ng-template>
@@ -39,6 +45,11 @@
           </li>
         </ul>
         <div [ngbNavOutlet]="nav" class="mt-2 flex-grow-1 overflow-auto"></div>
+
+        @let output = this.codeRunOutput();
+        @if (output) {
+          <app-code-run [codeRunOutput]="output"></app-code-run>
+        }
       </div>
 
       <!-- Right Panel: Code Editor -->
@@ -49,9 +60,14 @@
           class="bg-dark text-white p-3 d-flex align-items-center justify-content-between"
         >
           <h5 class="mb-0">Code Editor</h5>
-          <button class="btn btn-success" (click)="submitSolution()">
-            Submit Solution
-          </button>
+          <div>
+            <button class="btn btn-primary mx-3" (click)="runCode()">
+              Run code
+            </button>
+            <button class="btn btn-success" (click)="submitSolution()">
+              Submit Solution
+            </button>
+          </div>
         </div>
 
         <div class="flex-grow-1 overflow-auto">
@@ -62,9 +78,19 @@
           ></ngx-monaco-editor>
         </div>
 
-        <!-- Code Execution Section -->
-        <div class="bg-white border-top overflow-auto h-25">
-          <app-code-run [code]="code()" [language]="language()"></app-code-run>
+        <div class="container bg-light border">
+          <div class="p-3">
+            <h5 class="mb-3">Code run input</h5>
+            <div class="form-group">
+              <label for="testCaseInput">Enter Test Case Input:</label>
+              <textarea
+                class="form-control"
+                id="testCaseInput"
+                [(ngModel)]="codeRunInput"
+                rows="5"
+              ></textarea>
+            </div>
+          </div>
         </div>
       </div>
     </div>

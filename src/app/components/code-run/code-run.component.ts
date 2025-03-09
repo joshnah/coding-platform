@@ -1,16 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-  signal,
-  linkedSignal,
-} from '@angular/core';
-import { SpinnerService } from '../../services/spinner.service';
-import { ExecutionService } from '../../services/execution.service';
-import { CodeExecutionResult } from '../../models/codingQuestion.model';
-import { finalize } from 'rxjs';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CodeExecutionResult } from '../../models/codingQuestion.model';
 
 @Component({
   selector: 'app-code-run',
@@ -20,29 +10,8 @@ import { FormsModule } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodeRunComponent {
-  code = input('');
-  executionService = inject(ExecutionService);
-  output = signal<CodeExecutionResult | null>(null);
-  stdin = signal('');
-  language = input('');
-  private spinner = inject(SpinnerService);
-
-  executeCode() {
-    this.spinner.openGlobalSpinner();
-    this.executionService
-      .executeCode(this.code(), this.language(), this.stdin()!)
-      .pipe(
-        finalize(() => {
-          this.spinner.closeGlobalSpinner();
-        }),
-      )
-
-      .subscribe((codeExecutionResult: CodeExecutionResult) => {
-        console.log(codeExecutionResult);
-        this.output.set(codeExecutionResult);
-      });
-  }
+  codeRunOutput = input<CodeExecutionResult>();
   hasErrorCompilation(): boolean {
-    return this.output()?.status?.id === 6;
+    return this.codeRunOutput()?.status?.id === 6;
   }
 }
