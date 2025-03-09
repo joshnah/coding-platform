@@ -3,12 +3,13 @@ export interface CodingQuestion {
   title: string;
   description: string;
   testCases: TestCase[];
-  functionSignatures: FunctionSignature[];
+  functionSignature: FunctionSignature;
+  functionName: string;
 }
 
 export interface FunctionSignature {
-  language: string;
-  signature: string;
+  arguments: FunctionArgument[];
+  returnType: string;
 }
 
 export interface FunctionArgument {

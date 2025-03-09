@@ -24,4 +24,11 @@ export class ExecutionService {
       input,
     } as CodeExecution);
   }
+
+  submit(code: string, language: string) {
+    return this.http.post(`${this.url}/submit`, {
+      code,
+      language,
+    });
+  }
 }
