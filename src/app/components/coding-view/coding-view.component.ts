@@ -1,6 +1,9 @@
+import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
+  effect,
   inject,
   linkedSignal,
   resource,
@@ -15,9 +18,16 @@ import { CodeGeneratorService } from '../../services/code-generator.service';
 import { ExecutionService } from '../../services/execution.service';
 import { SpinnerService } from '../../services/spinner.service';
 import { CodeRunComponent } from '../code-run/code-run.component';
+import { SubmissionDetailComponent } from '../submission-detail/submission-detail.component';
 @Component({
   selector: 'app-coding-view',
-  imports: [EditorComponent, FormsModule, NgbNavModule, CodeRunComponent],
+  imports: [
+    EditorComponent,
+    FormsModule,
+    NgbNavModule,
+    CodeRunComponent,
+    SubmissionDetailComponent,
+  ],
   templateUrl: './coding-view.component.html',
   styleUrl: './coding-view.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,45 +38,56 @@ export class CodingViewComponent {
   private spinner = inject(SpinnerService);
 
   language = signal('python');
-  codeRunInput = linkedSignal(
-    () => this.codingQuestion.value().testCases[0].input,
-  );
+  codeRunInput = linkedSignal(() => this.codingQuestion().testCases[0].input);
   codeRunOutput = signal<CodeExecutionResult | null>(null);
   active = 'description';
+  submissionResult = signal<any>(null);
 
-  editorOptions = {
+  editorOptions = computed(() => ({
     language: this.language(),
     scrollBeyondLastLine: false,
     lineHeight: 20,
     fontSize: 14,
     wordWrap: 'on',
     wrappingIndent: 'indent',
-    automaticLayout: true, // Ajuste automatiquement la taille de l'éditeur
-  };
+    automaticLayout: true,
+  }));
 
-  codingQuestion = resource({
+  codingQuestionResource = resource({
     loader: async () => {
       const response = await fetch('http://localhost:5000/questions/mock');
       return response.json();
     },
   });
-
+  codingQuestion = this.codingQuestionResource.value;
   code = linkedSignal(() =>
-    this.codingQuestion.hasValue()
+    this.codingQuestion()
       ? this.codeGeneratorService.generateSubmissionCode(
-          this.codingQuestion.value(),
+          this.codingQuestion(),
           this.language(),
         )
       : '',
   );
+
   submitSolution() {
+    this.spinner.openGlobalSpinner();
     this.executionService
       .submit(this.code(), this.language())
-      .subscribe((a) => console.log(a));
+      .pipe(
+        finalize(() => {
+          this.spinner.closeGlobalSpinner();
+        }),
+      )
+      .subscribe((result) => {
+        this.active = 'submission-detail';
+        this.submissionResult.set(result);
+      });
   }
+
   hasErrorCompilation(): boolean {
     return this.codeRunOutput()?.status?.id === 6;
   }
+
   runCode() {
     this.spinner.openGlobalSpinner();
     this.executionService

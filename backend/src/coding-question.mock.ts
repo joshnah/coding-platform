@@ -1,57 +1,46 @@
 export const MOCK_CODING_QUESTION = {
-  id: 'filter_and_format_data',
-  title: 'Filter and Format Data',
-  description: `
-Given a list of numbers, a list of names, a minimum value, a prefix string, and a flag indicating whether to capitalize the names,
-return a list of formatted strings for all numbers greater than or equal to the minimum value. Each string should be of the form:
-"<prefix>_<name>_<number>". If \`capitalizeNames\` is true, the names must be converted to uppercase.
+  id: 'two_sum',
+  title: 'Two Sum',
+  description: `Given a list of integers and a target number, return the **indices** of the two numbers that add up to the target.
+
+You may assume that each input would have **exactly one solution**, and you **may not use the same element twice**.
 
 **Example:**
 Input:
-  numbers = [10, 25, 30]
-  names = ["alice", "bob", "carol"]
-  minValue = 20
-  prefix = "ID"
-  capitalizeNames = true
+  numbers = [2, 7, 11, 15]
+  target = 9
 
 Output:
-  ["ID_BOB_25", "ID_CAROL_30"]
+  [0, 1]  (because numbers[0] + numbers[1] = 2 + 7 = 9)
 `,
-  functionName: 'filterAndFormatData',
+  functionName: 'twoSum',
   functionSignature: {
     arguments: [
       { name: 'numbers', type: 'int[]' },
-      { name: 'names', type: 'string[]' },
-      { name: 'minValue', type: 'int' },
-      { name: 'prefix', type: 'string' },
-      { name: 'capitalizeNames', type: 'boolean' },
+      { name: 'target', type: 'int' },
     ],
-    returnType: 'string[]',
+    returnType: 'int[]',
   },
   testCases: [
     {
-      input: `10,25,30
-alice,bob,carol
-20
-ID
-true`,
-      expectedOutput: `ID_BOB_25,ID_CAROL_30`,
+      input: `2,7,11,15
+9`,
+      expectedOutput: `0,1`,
     },
     {
-      input: `5,8,15
-x,y,z
-10
-user
-false`,
-      expectedOutput: `user_z_15`,
+      input: `3,2,4
+6`,
+      expectedOutput: `1,2`,
     },
     {
-      input: `100,200,300
-john,jane,doe
-150
-emp
-true`,
-      expectedOutput: `EMP_JANE_200,EMP_DOE_300`,
+      input: `2,3,5,7
+9`,
+      expectedOutput: `0,3`,
+    },
+    {
+      input: `10,20,30,40,80
+70`,
+      expectedOutput: `2,3`,
     },
   ],
 };

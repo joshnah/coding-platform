@@ -1,9 +1,7 @@
-@let question = codingQuestion.value();
+@let question = codingQuestion();
 @if (question) {
   <div class="container-fluid h-100 d-flex flex-column">
-    <!-- Full height row -->
     <div class="row flex-grow-1 h-100">
-      <!-- Left Panel: Question Description -->
       <div
         class="col-6 bg-light overflow-auto d-flex flex-column h-100 border pt-2"
       >
@@ -31,16 +29,25 @@
               </div>
             </ng-template>
           </li>
-          <li ngbNavItem="submissions-list">
-            <button ngbNavLink>History</button>
-            <ng-template ngbNavContent>
-              <h2>Display submission history</h2>
-            </ng-template>
-          </li>
           <li ngbNavItem="submission-detail">
-            <button ngbNavLink>Submissions</button>
+            <button ngbNavLink>Submission</button>
             <ng-template ngbNavContent>
-              <h2>Display submission details</h2>
+              <div class="container py-3">
+                <h4>Submission Details</h4>
+
+                @if (submissionResult()?.length > 0) {
+                  <app-submission-detail
+                    [question]="question"
+                    [submissionResult]="submissionResult()"
+                    [submittedCode]="code()"
+                    [language]="language()"
+                  ></app-submission-detail>
+                } @else {
+                  <div class="alert alert-warning mt-3">
+                    No submission results to display.
+                  </div>
+                }
+              </div>
             </ng-template>
           </li>
         </ul>
@@ -52,17 +59,24 @@
         }
       </div>
 
-      <!-- Right Panel: Code Editor -->
-
       <div class="col-6 d-flex flex-column h-100 bg-light border p-0">
-        <!-- Submit Button -->
         <div
           class="bg-dark text-white p-3 d-flex align-items-center justify-content-between"
         >
-          <h5 class="mb-0">Code Editor</h5>
+          <div class="d-flex align-items-center flex-nowrap">
+            <h5 class="mb-0 me-2">Code Editor</h5>
+            <select
+              class="form-select form-select-sm w-auto"
+              aria-label="Select Language"
+              [(ngModel)]="language"
+            >
+              <option value="python">Python</option>
+              <option value="javascript">Javascript</option>
+            </select>
+          </div>
           <div>
-            <button class="btn btn-primary mx-3" (click)="runCode()">
-              Run code
+            <button class="btn btn-primary me-2" (click)="runCode()">
+              Run Code
             </button>
             <button class="btn btn-success" (click)="submitSolution()">
               Submit Solution
@@ -72,7 +86,7 @@
 
         <div class="flex-grow-1 overflow-auto">
           <ngx-monaco-editor
-            [options]="editorOptions"
+            [options]="editorOptions()"
             [(ngModel)]="code"
             class="h-100 w-100"
           ></ngx-monaco-editor>

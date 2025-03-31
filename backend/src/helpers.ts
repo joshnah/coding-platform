@@ -8,6 +8,7 @@ const JUDGE0_API_KEY = process.env['JUDGE0_API_KEY'];
 export const languagesMap: { [key: string]: number } = {
   python: 71,
   java: 62,
+  javascript: 102
 };
 
 export async function getBatchResults(batchResponses) {
