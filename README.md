@@ -1,27 +1,28 @@
-# CodingPlatform
+# Coding Platform
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.3.
+This is a demo project for the Medium post:  
+**Build Your Own LeetCode-Style Coding Platform with ⚡ Angular 19 & 🔥 Judge0**
 
-## Development server
+The project consists of a simple backend built with a Node.js server (located in the backend/ folder) and does not use a database.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Getting Started
 
-## Code scaffolding
+### Backend Setup
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Copy `.env-default` to `.env` and add your **Judge0 API key**.
+2. Install dependencies and start the server:
 
-## Build
+   ```sh
+   cd backend && npm install && npm run dev
+   ```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Frontend Setup
 
-## Running unit tests
+1. Install dependencies and start the frontend server:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+   ```sh
+   npm install && npm run start
+   ```
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+2. The application will be available at:  
+   **http://localhost:4200**
