@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
-import {
-  CodingQuestion,
-  FunctionSignature,
-} from '../models/codingQuestion.model';
+import { CodingQuestion } from '../models/codingQuestion.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CodeGeneratorService {
-  constructor() {}
   generateSubmissionCode(question: CodingQuestion, language: string): string {
     switch (language) {
       case 'python':
         return this.generatePythonCode(question);
+      case 'javascript':
+        return this.generateJavaScriptCode(question);
       default:
         throw new Error('Unsupported language');
     }
@@ -45,6 +43,10 @@ export class CodeGeneratorService {
       .map((arg) => arg.name)
       .join(', ');
 
+    const outputHandling = question.functionSignature.returnType.endsWith('[]')
+      ? 'print(",".join(map(str, output)))'
+      : 'print(output)';
+
     return `def ${question.functionName}(${args}):
     # Your code here
     pass
@@ -52,6 +54,51 @@ export class CodeGeneratorService {
 if __name__ == "__main__":
 ${adjustedParsers.join('\n')}
     output = ${question.functionName}(${callArguments})
-    print(output)`;
+    ${outputHandling}`;
+  }
+
+  generateJavaScriptCode(question: CodingQuestion) {
+    const args = question.functionSignature.arguments
+      .map((arg) => arg.name)
+      .join(', ');
+
+    const adjustedParsers = question.functionSignature.arguments.map(
+      (arg, index) => {
+        const name = arg.name;
+        switch (arg.type) {
+          case 'int':
+            return `  const ${name} = parseInt(inputArray[${index}].trim(), 10);`;
+          case 'string':
+            return `  const ${name} = inputArray[${index}].trim();`;
+          case 'boolean':
+            return `  const ${name} = inputArray[${index}].trim().toLowerCase() === "true";`;
+          case 'int[]':
+            return `  const ${name} = inputArray[${index}].trim().split(',').map(Number);`;
+          case 'string[]':
+            return `  const ${name} = inputArray[${index}].trim().split(',');`;
+          default:
+            return `  const ${name} = inputArray[${index}].trim();`;
+        }
+      },
+    );
+
+    const callArguments = question.functionSignature.arguments
+      .map((arg) => arg.name)
+      .join(', ');
+
+    const outputHandling = question.functionSignature.returnType.endsWith('[]')
+      ? "console.log(output.join(','));"
+      : 'console.log(output);';
+
+    return `function ${question.functionName}(${args}) {
+  // Your code here
+}
+
+process.stdin.on('data', data => {
+  const inputArray = data.toString().trim().split('\\n');
+${adjustedParsers.join('\n')}
+  const output = ${question.functionName}(${callArguments});
+  ${outputHandling}
+});`;
   }
 }
