@@ -5,7 +5,7 @@ import { CodingQuestion } from '../models/codingQuestion.model';
   providedIn: 'root',
 })
 export class CodeGeneratorService {
-  generateSubmissionCode(question: CodingQuestion, language: string): string {
+  generateCodeTemplate(question: CodingQuestion, language: string): string {
     switch (language) {
       case 'python':
         return this.generatePythonCode(question);

@@ -62,7 +62,7 @@ export class CodingViewComponent {
   codingQuestion = this.codingQuestionResource.value;
   code = linkedSignal(() =>
     this.codingQuestion()
-      ? this.codeGeneratorService.generateSubmissionCode(
+      ? this.codeGeneratorService.generateCodeTemplate(
           this.codingQuestion(),
           this.language(),
         )
